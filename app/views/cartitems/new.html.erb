@@ -1,0 +1,11 @@
+<h1>カートに商品を追加</h1>
+
+<%= form_with url: cartitems_path, method: :post do %>
+  <p>
+    <%= label_tag :product_id, "商品を選択" %><br>
+    <%= select_tag :product_id, options_from_collection_for_select(@products, :id, :names) %>
+  </p>
+  <%= submit_tag "カートに追加" %>
+<% end %>
+
+<p><%= link_to "商品一覧に戻る", products_path %></p>

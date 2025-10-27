@@ -1,0 +1,45 @@
+<h1>ショッピングカート</h1>
+
+<% if @cart.cartitems.any? %>
+  <table border="1" cellpadding="5">
+    <tr>
+      <th>商品名</th>
+      <th>価格</th>
+      <th>数量</th>
+      <th>小計</th>
+      <th>操作</th>
+    </tr>
+    <% total = 0 %>
+    <% @cart.cartitems.each do |item| %>
+      <tr>
+        <td><%= item.product.names %></td>
+        <td><%= item.product.price %>円</td>
+        <td><%= item.quantity %></td>
+        <td><%= item.product.price * item.quantity %>円</td>
+        <td>
+          <!-- 数量＋ボタン -->
+          <%= form_with url: update_quantity_cartitem_path(item), method: :patch, local: true do |f| %>
+            <%= hidden_field_tag :change, 1 %>
+            <%= f.submit "+", class: "btn" %>
+          <% end %>
+
+          <!-- 数量−ボタン -->
+          <%= form_with url: update_quantity_cartitem_path(item), method: :patch, local: true do |f| %>
+            <%= hidden_field_tag :change, -1 %>
+            <%= f.submit "−", class: "btn" %>
+          <% end %>
+
+          <!-- カートから削除 -->
+          <%= link_to "削除", cartitem_path(item), data: { turbo_method: :delete, confirm: "削除しますか？" } %>
+        </td>
+      </tr>
+      <% total += item.product.price * item.quantity %>
+    <% end %>
+  </table>
+
+  <p><strong>合計金額：</strong><%= total %>円</p>
+<% else %>
+  <p>カートは空です。</p>
+<% end %>
+
+<p><%= link_to "商品一覧に戻る", products_path %></p>
